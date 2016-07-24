@@ -1,0 +1,13 @@
+[Unit]
+Description=MonoAmp service
+After=syslog.target
+
+[Service]
+User=bruce
+ExecStart=/usr/bin/screen -d -m /usr/bin/mono AmpLoader.exe
+#Restart=on-failure
+#ExecStop=/bin/kill -HUP $MAINPID
+WorkingDirectory=/home/bruce/monoamp/MonoAmp
+
+[Install]
+WantedBy=default.target

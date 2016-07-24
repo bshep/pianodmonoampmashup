@@ -1,0 +1,11 @@
+[Unit]
+Description=Pianod Music Daemon.
+After=syslog.target alsa-util
+
+[Service]
+ExecStart=/usr/local/bin/pianod -n bruce -d /home/bruce/.config -c /home/bruce/monoamp/MonoAmp/pianod_html
+Restart=always
+
+[Install]
+WantedBy=default.target
+
