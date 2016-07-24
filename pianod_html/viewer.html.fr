@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta name="generator" content=
+"HTML Tidy for HTML5 for Mac OS X version 5.1.25">
+<meta charset="UTF-8">
+<title>musique pianod spectateur</title>
+<meta name="viewport" content="width=device-width">
+<meta name="application-name" content="pianod-viewer">
+<link href="viewer.css" rel="stylesheet" type="text/css">
+<link rel="shortcut icon" href="/Pianod/pianod-icon.gif">
+<link rel="apple-touch-icon-precomposed" href=
+"/Pianod/pianod-button.gif">
+<script type="application/javascript" src=
+"//ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"
+onload="jquery_loaded=true;">
+</script>
+<script src="viewer-engine.min.js">
+</script>
+</head>
+<body>
+<noscript>
+<h1>musique pianod spectateur</h1>
+Sorry, JavaScript is required to use this page.</noscript>
+<div id="pianod" class="pianodviewer">
+<div class="offline">
+<p class="identity">musique pianod spectateur<br>
+Copyright 2011–2016 Devious Fish<br>
+All rights reserved.<br>
+Released under the MIT license.</p>
+Non connecté à pianod exemple.</div>
+<div class="idle">
+<p class="identity">musique pianod spectateur<br>
+Copyright 2011–2016 Devious Fish<br>
+All rights reserved.<br>
+Released under the MIT license.</p>
+Rien jouer.</div>
+<div class="playing">
+<div class="albumcover"><img src="no-art.jpeg" class="albumart"
+alt='' ondblclick="trackview.showart ();"></div>
+<div class="playbackstatus stalled"><span>〈•••〉</span><br>
+Reproduction calé<br>
+Contrôlez la connexion réseau</div>
+<div class="playbackstatus paused"><span>||</span><br>
+Fait une pause</div>
+<div class="trackname"> <span class=
+"value">&nbsp;</span> </div>
+<div class="artistname">par <span class=
+"value">&nbsp;</span> </div>
+<div class="albumname">sur <span class=
+"value">&nbsp;</span></div>
+<div class="songplaylist">sur <span class=
+"value">&nbsp;</span> </div>
+<div class="controller">
+<div class="statusbar">
+<div class="progressbar" style="width:50%;"><span style=
+"display:none;">&nbsp;</span></div>
+</div>
+<span class="timepoint time">&nbsp;</span> <span class=
+"duration time">&nbsp;</span></div>
+</div>
+</div>
+<script type="text/javascript">
+        var viewer = new PianodViewer (PianodFinder.get_best_url());
+</script>
+</body>
+</html>

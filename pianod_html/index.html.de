@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta name="generator" content=
+"HTML Tidy for HTML5 for Mac OS X version 5.1.25">
+<meta charset="UTF-8">
+<title>pianod Web-Fernsteuerung</title>
+<meta name="viewport" content="width=device-width">
+<meta name="application-name" content="pianod">
+<link href="client.css" rel="stylesheet" type="text/css">
+<link rel="shortcut icon" href="pianod-icon.gif">
+<link rel="apple-touch-icon-precomposed" href="pianod-button.gif">
+<script type="application/javascript" src=
+"//ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"
+onload="jquery_loaded=true;">
+</script>
+<script type="application/javascript" src="translate.js">
+</script>
+<script type="application/javascript" src="client-engine.min.js">
+</script>
+</head>
+<body>
+<noscript>
+<h1>pianod Web-Fernsteuerung</h1>
+Sorry, JavaScript ist erforderlich, um diese Seite zu nutzen.</noscript>
+<div id="switcher" style="display:none;"><span class=
+"trackcontrols"><a class="playpause privuser" onclick=
+"execute ('PAUSE TOGGLE');" title=
+"unterbrechen oder fortsetzen.">▶</a></span> <select id=
+"sourcepicker" onchange="sourceview.select_source();">
+<option value="1">Medienmanager</option>
+</select> <a class="handle" onclick=
+"viewmanager.toggle_menu();">≣ Wählen Sie Ansicht</a>
+<div class="menu"><a onclick=
+"viewmanager.show ('source')">Quellen</a> <a onclick=
+"viewmanager.show ('track')">Spur</a> <a onclick=
+"viewmanager.show ('search')">Suche</a> <a onclick=
+"viewmanager.show ('playlist')">Playlists</a> <a onclick=
+"viewmanager.show ('seed')">Kinder</a> <a onclick=
+"viewmanager.show ('activity')">Aktivität</a> <a onclick=
+"viewmanager.show ('user')">Benutzer</a> <a onclick=
+"viewmanager.show ('admin')">Verwalten</a> <a onclick=
+"viewmanager.logout ()">Urlaub</a></div>
+</div>
+<div id="views">
+<div id="loginview" style="display:none;">
+<h1>pianod Web-Fernsteuerung</h1>
+<p>Urheberrecht 2011-2016 Devious Fisch<br>
+Alle Rechte vorbehalten.<br>
+unter der MIT-Lizenz veröffentlicht.</p>
+<div id="serverinput"><label for=
+"server">Server</label> <input id="server" type="url"
+maxlength="80" required="required" value=
+"house.perette.barella.org:4446"> <input id="secureserver" type=
+"checkbox" onchange="loginview.toggle_security()"> <label for=
+"secureserver">Sichere Verbindung</label></div>
+<label for="username">Benutzername</label> <input id=
+"username" type="text" maxlength="20"> <label for=
+"password">Passwort</label> <input id="password" type=
+"password" maxlength="20"> <input id="storepassword" type=
+"checkbox"> <label for=
+"storepassword">Shop Passwort</label>
+<p><a id="loginbutton" class="button" onclick=
+"loginview.connect(false);">Anmelden</a> <a class=
+"button" onclick=
+"loginview.connect(true);">Guest</a></p>
+<p><a href="console.html">Console</a> • <a href=
+"viewer.html">Viewer</a></p>
+<p class="note">Sichere Verbindungen erfordern TLS-Zertifikate und Schlüssel eingerichtet werden.</p>
+</div>
+<div id="sourceview" style="display:none;">
+<h2>Quellen</h2>
+<div class="accordion">
+<h3 class="privservice">Neuen Quelle</h3>
+<div id="addsourceparameters"><label for=
+"addsourcetype">Typ Quelle:</label> <select id=
+"addsourcetype" onchange="sourceview.select_add_fields();">
+<option value="">Typ auswählen ...</option>
+</select> <!-- Network media parameters -->
+ <label for="addsourceuser">Dienstbenutzernamen</label> <input id=
+"addsourceuser" type="text" placeholder=
+"Benutzername"> <label for=
+"addsourcepassword">Service-Passwort</label> <input id=
+"addsourcepassword" type="password" placeholder=
+"Passwort">
+<div><input id="addsourcepandoraone" type="checkbox"> <label for=
+"addsourcepandoraone">Pandora One</label></div>
+<!-- Local media parameters -->
+<label for="addsourcepath">Verzeichnis / Pfad / Ordner für die Medien</label> <input id=
+"addsourcepath" placeholder="Drag Musik-Ordner hier"> 
+<!-- Generic parameters -->
+<div><input id="addsourceratingbias_enable" type="checkbox"
+onchange="sourceview.select_add_fields();"> <label for=
+"addsourceratingbias_enable">Rating bias level</label>
+<input id="addsourceratingbias" type="range" min="1" max="100"
+step="1" title="Control how much ratings effect song selections.  At left, none; at right, each star biases selection probability by about 3x (unrated songs = 3 stars)."></div>
+<div><input id="addsourcerecentbias_enable" type="checkbox"
+onchange="sourceview.select_add_fields();"> <label for=
+"addsourcerecentbias_enable">Recently played bias level</label>
+<input id="addsourcerecentbias" type="range" min="1" max="100"
+step="1" title="Control how much recent play effects song selections.  At left, none; at right, selection probability is biased roughly linear with time since last play."></div>
+<div><select id="addsourcerescan" onchange=
+"sourceview.select_add_fields();">
+<option value="">Default rescan interval</option>
+<option value="never" title="Never rescan for new media">
+Never</option>
+<option value="once" title="Rescan for media just this once">
+Once</option>
+<option value="always" title="Rescan whenever source is started">
+Always</option>
+<option value="periodically" title=
+"Rescan for media daily">
+Periodically</option>
+</select></div>
+<div><select id="addsourceaccess" onchange=
+"sourceview.select_add_fields();">
+<option value="">Default sharing</option>
+<option value="disowned" title="kann von niemandem überprüft werden.">
+Unowned</option>
+<option value="private" title="Andere Benutzer können nicht die Quelle zu leihen">
+Privat</option>
+<option value="shared" title="Andere können zu leihen, aber nicht zu kopieren oder zu revidieren Quelle">
+Geteilt</option>
+<option value="published" title="Andere können zu leihen und zu kopieren, aber Quelle nicht überarbeiten">
+Veröffentlicht</option>
+<option value="public" title="Andere können zu leihen, zu kopieren und zu überarbeiten Quelle">
+Öffentlichen</option>
+</select></div>
+<div><select id="addsourcesongproxy" onchange=
+"sourceview.select_add_fields();">
+<option value="">Select song substitution mode...</option>
+<option value="none" title="This source is not involved in media substitution.">
+No substitutions</option>
+<option value="donor" title="Recipient sources may substitute matching songs from this source.">
+Provides substitutions</option>
+<option value="recipient" title=
+"This source may substitute media with matches from donor sources.">
+Accepts substitutions</option>
+</select></div>
+<div><select id="addsourcepersistence" onchange=
+"sourceview.select_add_fields();">
+<option value="">Do not remember source</option>
+<option value="remember" title=
+"Remember and allow manual re-use.">
+Remember</option>
+<option value="restore" title="Remember and restore automatically on startup.">
+Restore</option>
+</select></div>
+<div><label for="addsourcename">Namen für Quelle</label>
+<input id="addsourcename" placeholder=
+"Leer für Standard-"></div>
+<ul class="actions">
+<li><a class="button" onclick=
+"sourceview.add_source ();">Quelle hinzufügen</a></li>
+</ul>
+</div>
+<h3 id="borrowsource" class="privservice">Vorhandene Quelle</h3>
+<div id="borrowsourceparameters"><select id="borrowlist" onchange=
+"sourceview.select_borrow_fields();">
+<option>Quelle wählen zu aktivieren ...</option>
+</select>
+<div><input id="borrowsourceratingbias_enable" type="checkbox"
+onchange="sourceview.select_borrow_fields();"> <label for=
+"borrowsourceratingbias_enable">Rating bias level</label>
+<input id="borrowsourceratingbias" type="range" min="1" max="100"
+step="1" title="Control how much ratings effect song selections.  At left, none; at right, each star biases selection probability by about 3x (unrated songs = 3 stars)."></div>
+<div><input id="borrowsourcerecentbias_enable" type="checkbox"
+onchange="sourceview.select_borrow_fields();"> <label for=
+"borrowsourcerecentbias_enable">Recently played bias level</label>
+<input id="borrowsourcerecentbias" type="range" min="1" max="100"
+step="1" title="Control how much recent play effects song selections.  At left, none; at right, selection probability is biased roughly linear with time since last play."></div>
+<div><select id="borrowsourcerescan" onchange=
+"sourceview.select_borrow_fields();">
+<option value="">Retain current rescan interval</option>
+<option value="never" title="Never rescan for new media">
+Never</option>
+<option value="once" title="Rescan for media just this once">
+Once</option>
+<option value="always" title="Rescan whenever source is started">
+Always</option>
+<option value="periodically" title=
+"Rescan for media daily">
+Periodically</option>
+</select></div>
+<div><select id="borrowsourceaccess" onchange=
+"sourceview.select_borrow_fields();">
+<option value="">Retain current sharing behavior</option>
+<option value="disowned" title="kann von niemandem überprüft werden.">
+Unowned</option>
+<option value="private" title="Andere Benutzer können nicht die Quelle zu leihen">
+Privat</option>
+<option value="shared" title="Andere können zu leihen, aber nicht zu kopieren oder zu revidieren Quelle">
+Geteilt</option>
+<option value="published" title="Andere können zu leihen und zu kopieren, aber Quelle nicht überarbeiten">
+Veröffentlicht</option>
+<option value="public" title="Andere können zu leihen, zu kopieren und zu überarbeiten Quelle">
+Öffentlichen</option>
+</select></div>
+<div><select id="borrowsourcesongproxy" onchange=
+"sourceview.select_borrow_fields();">
+<option value="">Use current song substitution mode</option>
+<option value="none" title="This source is not involved in media substitution.">
+No substitutions</option>
+<option value="donor" title="Recipient sources may substitute matching songs from this source.">
+Provides substitutions</option>
+<option value="recipient" title=
+"This source may substitute media with matches from donor sources.">
+Accepts substitutions</option>
+</select></div>
+<div><select id="borrowsourcepersistence" onchange=
+"sourceview.select_borrow_fields();">
+<option value="">Do not remember any changes</option>
+<option value="remember" title=
+"Remember and allow manual re-use.">
+Remember</option>
+<option value="restore" title="Remember and restore automatically on startup.">
+Restore</option>
+</select></div>
+<ul class="actions">
+<li><a class="button" onclick=
+"sourceview.borrow_source();">Verwenden Quelle</a></li>
+</ul>
+</div>
+<h3 class="privservice">Remove Quelle</h3>
+<div>
+<ul class="actions">
+<li><a class="button" onclick=
+"sourceview.remove_source();">Entfernen Stromquelle</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="trackview" style="display:none;">
+<div id="trackviewtitle"><span class="trackcontrols"><a class=
+"playpause button privuser" onclick="execute ('PAUSE TOGGLE');"
+title="unterbrechen oder fortsetzen.">▶</a> <a class=
+"button privuser" onclick="execute('skip');" title=
+"Den aktuellen Titel überspringen">&nbsp;»&nbsp;</a></span> <a id=
+"nowplaying" onclick="trackview.go_to_current_track();" class=
+"button" title="Aktuell abgespielten song anzeigen.">Sie hören</a>
+<select id="playlistname" onchange="trackview.select_playlist();">
+<option>Select Playlist ...</option>
+<optgroup label="Sonderplaylists">
+<option value="stop">Stopp</option>
+<option value="request">Nur Anfragen</option>
+<option value="mix">Mix ausgewählten Wiedergabelisten</option>
+<option value="everything">Mix alles</option>
+<option value="auto">Autotune Wiedergabelisten</option>
+</optgroup>
+<optgroup id="playlists" label="Einzel Wiedergabelisten">
+<option>&nbsp;</option>
+</optgroup>
+</select></div>
+<div id="addplaylistfromtrack" class="popup">
+<div><span class="close" onclick=
+"$('#addplaylistfromtrack').hide();">╳</span>
+<p>Samen hinzufügen Aus Song</p>
+<label for="addfromtracktarget">Wiedergabeliste:</label>
+<select id="addfromtracktarget" onchange=
+"trackview.select_add_target();">
+<option value="">Neue Wiedergabeliste zu erstellen</option>
+</select>
+<div id="addfromtracknewplaylist"><label for=
+"addfromtracksource">Neue Wiedergabeliste auf Quelle:</label>
+<select id="addfromtracksource">
+<option>&nbsp;</option>
+</select> <input id="addfromtrackplaylist" type="text" placeholder=
+"Neue Wiedergabeliste name"></div>
+<ul class="actions">
+<li><a id="doaddseedfromsong" class="button" onclick=
+"trackview.add_from_track('song');">Neue Wiedergabeliste aus Songs</a></li>
+<li><a id="doaddseedfromalbum" class="button" onclick=
+"trackview.add_from_track('album');">Neue Wiedergabeliste aus dem Album</a></li>
+<li><a id="doaddseedfromartist" class="button" onclick=
+"trackview.add_from_track('artist');">erstellen Playlist from artist</a></li>
+</ul>
+</div>
+</div>
+<div id="trackinfo">
+<div id="albumcover"><img src="no-art.jpeg" id="albumart" alt=''
+ondblclick="trackview.showart ();"> <a id="why" class=
+"button privowner" onclick="trackview.explain_song ();" title=
+"Erklären Sie, warum dieser Song gespielt wurde.">?</a>
+<div class="pager"><a id="previoustrack" onclick=
+"trackview.go_to_previous_track();" class="button previous" title=
+"Vorherige Spur Anzeigen">&nbsp;←&nbsp;</a> <a id=
+"nexttrack" onclick="trackview.go_to_next_track();" class=
+"button next" title=
+"Anzeigen nächsten Titel">&nbsp;→&nbsp;</a></div>
+<div id="networkstatus" class="statusoverlay">
+<span>〈•••〉</span><br>
+Wiedergabe Stalled<br>
+Netzwerkverbindung prüfen</div>
+<div id="pausestatus" class="statusoverlay" onclick=
+"execute('RESUME');"><span>|| Angehalten</span><br>
+&nbsp;</div>
+<div id="stoppedstatus" class="statusoverlay" onclick=
+"execute('PLAY');"><span>█ Stopped</span><br>
+&nbsp;</div>
+<div id="norequests" class="statusoverlay">
+<span>Keine anträge</span><br>
+Anfordern etwas musik.</div>
+<div id="needplaylists" class="statusoverlay" onclick=
+"viewmanager.show ('source');"><span>Keine playlisten</span><br>
+Bitte fügen Sie einige Quellen.</div>
+<div id="needmixselections" class="statusoverlay" onclick=
+"viewmanager.show ('playlist');"><span>Mix ist leer</span><br>
+Playlists zu mischen wählen.</div>
+<div id="go" class="statusoverlay" onclick="execute ('PLAY');">
+<span>▶&nbsp;Wiedergabe</span><br>
+&nbsp;</div>
+<div id="controller">
+<div><span id="timepoint" class="time">&nbsp;</span> <span id=
+"ratings"><a id="overplayed" class="button privowner" onclick=
+"trackview.rate_overplayed();" title=
+"Sie das Lied zu spielen nicht für einen Monat.">♻</a> <span id=
+"trackrating">&nbsp;</span></span> <span id="duration" class=
+"time">&nbsp;</span></div>
+<div id="statusbar">
+<div id="progressbar" style="width:50%;"><span style=
+"display:none;">&nbsp;</span></div>
+</div>
+</div>
+</div>
+<div id="trackdetails">
+<div id="trackname"><a id="additionalinfo" target=
+"_blank"><span class="value">&nbsp;</span></a> <a class=
+"button seed privowner" onclick="trackview.toggle_seed ('song');"
+title="Toggle Song Samen.">種</a></div>
+<div id="artistname"><span class="value">&nbsp;</span> <a class=
+"button seed privowner" onclick="trackview.toggle_seed ('artist');"
+title=
+"Toggle Künstler Samen.">種</a></div>
+<div id="albumname"><span class="value">&nbsp;</span> <a class=
+"button seed privowner" onclick="trackview.toggle_seed ('album');"
+title=
+"Toggle Album Samen.">種</a></div>
+<div id="songplaylist"><a class="privowner" onclick=
+"trackview.show_seeds ();"><span class="value">&nbsp;</span></a>
+<a class="button seed privowner" onclick=
+"$('#addplaylistfromtrack').show();" title=
+"Samen hinzufügen oder erstellen Playlist von Song, Album oder Künstler.">+</a></div>
+</div>
+</div>
+<input id="volume" class="privuser" type="range" min="-40" max="0"
+step="1" title="Volume" onchange="trackview.set_volume ();"></div>
+<div id="searchview" style="display:none;">
+<h2>Musiksuche</h2>
+<label for="searchtype">Suche</label> <select id=
+"searchtype">
+<option value="any">Any</option>
+<option value="song">Song</option>
+<option value="artist">Artist</option>
+<option value="album">Album</option>
+<option value="playlist">Genre</option>
+<option value="request">Nur auf Anfrage erhältlich Songs</option>
+</select> <label for="searchmethod">Methode</label>
+<select id="searchmethod">
+<option value="like">Spiel Wörter</option>
+<option value="where">Spiel Satz</option>
+<option value="expr">Expression</option>
+</select> <label for="searchfor">Matching</label>
+<input id="searchfor" type="text" placeholder=
+"Suchtext"> <a id="searchbutton" class=
+"button" onclick="searchview.search();">Suche</a>
+<a class="button" onclick=
+"searchview.request();">Alle Anfordern</a>
+<div id="searchaction" class="popup">
+<div><span class="close" onclick=
+"$('#searchaction').hide();">╳</span> <span id=
+"addfromsearchname">&nbsp;</span> (<span id=
+"addfromsearchtype">&nbsp;</span>)<br>
+<span id="searchinfosource">&nbsp;</span> (<span id=
+"searchinfoname">&nbsp;</span>)
+<div class="actiongrouping">
+<p>Add seed from search result</p>
+<label for="addfromsearchtarget">Wiedergabeliste:</label>
+<select id="addfromsearchtarget">
+<option value="">Select Playlist ...</option>
+</select>
+<ul class="actions">
+<li><a class="button" onclick=
+"searchview.add_seed ();">Samen hinzufügen</a></li>
+</ul>
+</div>
+<div class="actiongrouping">
+<p>Create playlist from search result</p>
+<label for=
+"addfromsearchsource">Neue Wiedergabeliste auf Quelle:</label>
+<select id="addfromsearchsource">
+<option>&nbsp;</option>
+</select> <input id="addfromsearchplaylist" type="text"
+placeholder="Neue Wiedergabeliste name">
+<ul class="actions">
+<li><a id="createplaylist" class="button" onclick=
+"searchview.create_playlist() ;">Neue Wiedergabeliste zu erstellen</a></li>
+</ul>
+</div>
+</div>
+</div>
+<table id="searchresults" class="scrolling">
+<thead>
+<tr>
+<th>&nbsp;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="playlistview" style="display:none;"><span class=
+"pagenumber">Seite&nbsp; <span id="playlistpage">&nbsp;</span>
+&nbsp;von&nbsp; <span id="playlistpages">&nbsp;</span>
+</span>
+<h2>Playlists</h2>
+<span class="pager"><a class="button" onclick=
+"playlistview.previous()">↑</a> <a class="button"
+onclick="playlistview.next()">↓</a> <select id="showmode"
+onchange="playlistview.change_shown_mode()">
+<option value="playlist">Select Playlist ...</option>
+<option value="mix">Mix ausgewählten Wiedergabelisten</option>
+<option value="everything">Mix alles</option>
+<option value="auto">Autotune Wiedergabelisten</option>
+</select> <a id="selectmode" class="button" onclick=
+"playlistview.select_mode()" title=
+"Wählen Sie den Wiedergabemodus und die Wiedergabe fortzusetzen.">▶</a></span>
+<ul id="playlistlist" class="columnar privinfluence">
+<li>Keine playlisten</li>
+</ul>
+</div>
+<div id="seedview" style="display:none;">
+<h2>Revise Wiedergabelisten</h2>
+<label for="reviseplaylist">Play</label>
+<select id="reviseplaylist" onchange="seedview.select_playlist();">
+<option value="">Select Playlist ...</option>
+</select>
+<div>
+<table id="seedsexisting">
+<thead>
+<tr>
+<th>&nbsp;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<a class="button" onclick=
+"seedview.remove_playlist();">Entfernen playlist komplett</a></div>
+</div>
+<div id="activityview" style="display:none;">
+<h2>Letzte Aktivitäten</h2>
+<ul id="recentactivity" class="scrolling">
+<li>&nbsp;</li>
+</ul>
+<textarea id="yellmessage" rows="4" placeholder=
+"Geben Meldung"></textarea>
+<br>
+<a id="yellbutton" class="button" title="Übertragung Ihrer Nachricht an andere angeschlossene pianod Nutzer."
+onclick="activityview.yell()">Yell it</a></div>
+<div id="adminview" style="display:none;">
+<h2>Verwaltung</h2>
+<div class="accordion">
+<h3 id="select_room">Wählen Zimmer</h3>
+<div><label for="rooms">Choose room:</label>
+<select id="rooms" onchange="adminview.select_room();">
+<option value="pianod" selected>Loading room list...</option>
+</select></div>
+<h3 class="privuser">Queue Stuff</h3>
+<div><label for=
+"queuerandomize">Make random selections by</label>
+<select id="queuerandomize" onchange=
+"adminview.select_queue_randomize();">
+<option value="song" selected>Assorted individual songs</option>
+<option value="album">Choosing an entire album</option>
+<option value="artist">A few songs by a single artist</option>
+<option value="playlist">Assorted songs from one playlist</option>
+<option value="random">A randomly chosen method</option>
+</select>
+<ul class="actions">
+<li><a class="button" title="Brechen Sie alle anstehenden Anforderungen." onclick=
+"execute (['request', 'clear'])">Klar Anfragen</a></li>
+<li><a class="button" title="Stopp nach dem aktuellen Song." onclick=
+"execute ('stop', 'Stopp geplant.');">Stopp nach dem aktuellen Song.</a></li>
+<li><a class="button" title="Sofort anhalten und überspringen Rest des abgespielten Song."
+onclick=
+"execute (['stop', 'now']);">Sofort stoppen</a></li>
+</ul>
+</div>
+<h3 class="privadmin">Shutdown</h3>
+<div>
+<ul class="actions">
+<li><a class="button privadmin" onclick=
+"execute ('shutdown', 'Shutdown zum Ende des Song geplant.');">Shutdown</a></li>
+</ul>
+<p class="note">Abschaltung erfolgt, wenn die Wiedergabe beendet ist. Wenn Relaunch in launchd / systemd / init konfiguriert, pianod Neustart nach einer Abschaltung.</p>
+</div>
+</div>
+</div>
+<div id="userview" style="display:none;">
+<h2>Benutzerpflege</h2>
+<div class="accordion">
+<h3>Zuschicken Passwort ändern</h3>
+<div><label for="oldpassword">Altes Kennwort</label>
+<input id="oldpassword" type="password"> <label for=
+"newpassword">Neues Passwort</label> <input id="newpassword"
+type="password"> <label for=
+"confirmpassword">Passwort bestätigen</label> <input id=
+"confirmpassword" type="password">
+<div><input id="shadowpassword" type="checkbox" onchange=
+"userview.change_shadow();"> <label for="shadowpassword" title=
+"Instead of changing a password, switch to your system password for pianod authentication.">Adopt system password</label></div>
+<a class="button" onclick=
+"userview.change_password();">Es ändern</a><br>
+
+Passwörter können mit dem Server in unverschlüsselter Form übermittelt. Verwenden Sie nicht einen wichtigen vergessen, wie die, die für Ihr Bankkonto.</div>
+<h3 class="privadmin">Erstellen Sie ein Benutzer</h3>
+<div><label for="createusername">Benutzername</label>
+<input id="createusername"> <label for=
+"createusertype">Berechtigungsstufe</label> <select id=
+"createusertype">
+<option value="listener">Listener</option>
+<option value="user">Norm</option>
+<option value="admin">Administrator</option>
+</select> <label for="createpassword">Passwort</label>
+<input id="createpassword" type="password"> <label for=
+"createconfirmpassword">Passwort bestätigen</label> <input id=
+"createconfirmpassword" type="password"> <a class="button" onclick=
+"userview.create_user()">Benutzer</a><br>
+Passwörter können mit dem Server in unverschlüsselter Form übermittelt. Verwenden Sie nicht einen wichtigen vergessen, wie die, die für Ihr Bankkonto.</div>
+<h3 id="alter_user" class="privadmin">Alter ein Benutzer</h3>
+<div><label for="alterusername">Benutzername</label>
+<select id="alterusername" onchange=
+"userview.select_alter_user();">
+<option value=''>Benutzer auswählen ...</option>
+</select> <label for="alterusertype">Rank & amp; Berechtigungen</label>
+<select id="alterusertype" onchange="userview.change_type();">
+<option value="disabled">Disabled</option>
+<option value="listener">Listener</option>
+<option value="user">Norm</option>
+<option value="admin">Administrator</option>
+</select>
+<ul class="privilegelist">
+<li><input id="privilegeservice" type="checkbox" onchange=
+"userview.change_privilege ('service')"> <label for=
+"privilegeservice">Hinzufügen, entfernen oder leihen Quellen</label></li>
+<li><input id="privilegeinfluence" type="checkbox" onchange=
+"userview.change_privilege ('influence')"> <label for=
+"privilegeinfluence">Einfluss Autotuned Wiedergabelisten</label></li>
+</ul>
+<a class="button" onclick=
+"userview.reset_password()">Passwort zurücksetzen</a> <a class=
+"button" onclick="userview.delete_user()">Benutzer löschen</a>
+<p class="note">Achten Sie darauf, Administrator Rang von allen Benutzern, die Sie ohne Administrator verlassen zu entfernen.</p>
+</div>
+<h3 id="kick_user" class="privadmin">Kick-Nutzer</h3>
+<div>
+<ul id="onlineusers" class="actions">
+<li>user list goes here</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="status"><span class="value">&nbsp;</span></div>
+<script type="text/javascript">
+    /* Create/start the view manager. */
+    translate = Translate();
+    viewmanager = ViewManager();
+    viewmanager.init();
+</script>
+</body>
+</html>

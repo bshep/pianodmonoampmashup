@@ -1,0 +1,3 @@
+# Keep search engines from indexing the music server; harmless but useless.
+User-agent: *
+Disallow: /

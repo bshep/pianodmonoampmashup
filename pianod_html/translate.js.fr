@@ -1,0 +1,144 @@
+/* pianod web client - internationalization/translation support
+   Copr. 2015 Perette Barella/Devious Fish
+   All rights reserved.
+*/
+
+
+function Translate () {
+	/* Constants */
+	var ERRORS = {
+
+
+		200: "Succès",
+		203: "Début de données",
+		204: "Pas de données ou la fin des données",
+		206: "Match trouvé",
+		207: "Valeur a été approchée",
+		210: "Commande reconnu mais l'action est en suspens",
+		300: "Détail",
+		301: "Réglages proxy invalide",
+		303: "Playlist non valide",
+		304: "Article pas trouvé",
+		400: "Bad commande",
+		401: "Non autorisé pour action demandée",
+		402: "Action a échoué",
+		403: "Existe déjà",
+		404: "Article demandé est introuvable",
+		405: "Action est pas applicable à l'état actuel",
+		406: "Login ou mot de passe invalide",
+		407: "Paramètre non valide",
+		408: "Playlist personnalisation échoué",
+		409: "Conflits rencontré",
+		410: "Panne temporaire, l'achèvement avenir inconnu",
+		411: "Le quota est dépassé",
+		412: "Devez être connecté",
+		413: "Non pris en charge",
+		414: "Ressources insuffisantes",
+		415: "Limite a été atteint",
+		416: "Opération uniquement valable sur les playlists primaires",
+		417: "Mauvais type d'action",
+		418: "Expression persistante ou valeur requise",
+		460: "Action pas pris en charge par la source",
+		461: "Valeur est pas pris en charge par la source",
+		462: "Action pas possible sur gestionnaire de médias",
+		498: "Il ya un bogue dans pianod",
+		499: "Non implémenté",
+		500: "Erreur de serveur interne",
+		501: "Rien à jouer",
+		502: "Échec Réseau",
+		503: "Service arrêt",
+		504: "L'échec de l'authentification",
+		505: "Ressources insufficent",
+		507: "Erreur de communication avec Pandora",
+		508: "Exécution de la commande incomplète",
+		509: "Permission denied",
+		510: "Exception",
+		511: "Temporisation Réseau",
+		512: "Impossible d'ouvrir la sortie audio",
+		'Bogus': 'Bogosity'
+	};
+
+
+
+
+	var MESSAGES = {
+		"Create playlist from song": "Créer playlist de chanson",
+		"Create playlist from album": "Créer playlist de l'album",
+		"Create playlist from artist": "Créer playlist de l'artiste",
+		"Add seed from song": "Ajouter les graines de chanson",
+		"Add seed from album": "Ajouter les graines de l'album",
+		"Add seed from artist": "Ajouter les graines de l'artiste",
+		
+		"Login failed": "Échec de la connexion",
+		"Connection failed.": "Connexion échoué.",
+		"Check port number.": "Vérifiez le numéro de port.",
+		"Bad user credentials.": "Pouvoirs Bad utilisateur.",
+		"Opening connection to %1$s.": "Connexion d'ouverture à %1$s.",
+		"Session ended.": "Session terminée.",
+		"Activity messages are disabled.": "Messages activité sont désactivées.",	
+		"Listeners online:": "Les auditeurs en ligne:",
+		"No message to yell.": "Aucun message à crier.",
+		"No playlists": "Aucunes listes de reproduction",
+		"No usable sources.": "Aucun sources utilisables.",	
+		"There is nothing playing right now.": "Il n'y a rien à jouer dès maintenant.",
+		"Please provide a playlist name.": "S'il vous plaît fournir un nom de playlist.",
+		"Can not retrieve user list": "Impossible de récupérer la liste des utilisateurs",
+		"Please select a user.": "S'il vous plaît sélectionner un utilisateur.",
+		"Are you sure you want to delete %1$s?": "Êtes-vous sûr de vouloir supprimer %1$s?",
+		"User %1$s updated.": "Utilisateur %1$s actualisées.",
+		"Password successfully updated.": "Mot de passe mis à jour avec succès.",
+		"New passwords do not match.": "Nouveaux mots de passe ne correspondent pas",
+
+		"PROMPT_OLD_PASSWORD": "Ancien mot de passe",
+		"PROMPT_NEW_PASSWORD": "Nouveau mot de passe",
+		"PROMPT_PIANOD_PASSWORD": "pianod password",
+		"PROMPT_SYSTEM_PASSWORD": "System password",
+
+		"HEADING_ALBUM": "Album",
+		"HEADING_ARTIST": "artist",
+		"HEADING_SONG": "Title",
+		"HEADING_GENRE": "Genre",
+		"HEADING_TYPE": "Type",
+		"HEADING_SEEDTYPE": "Seed Type",
+		"HEADING_PLAYLIST": "Playlist",
+		"HEADING_YEAR": "Year",
+		"HEADING_ACTIONS": "Actions",
+		"HEADING_DURATION": "Length",
+		"HEADING_ACTION": "Actions",
+
+		"ADDSOURCE_NULL_PATH": "Please specify path/folder for music.",
+
+		'Bogus': 'Bogosity'
+	};
+	
+	/* Private variables */
+
+	/* Private functions */
+	if (typeof (assert) == 'undefined') {
+		var assert = function () { };
+	}
+
+	/* Return a function object, which will see all of
+	   the above via the closure. */
+	return (function (value) {
+		if (typeof (value) == 'string') {
+			// Translate a string
+			var message = value in MESSAGES ? MESSAGES [value] : value;
+			// Perform printf-style positional string substitutions.
+			for (var i = 1; i < arguments.length; arguments++) {
+				message = message.replace (RegExp ("%" + i + "\\$s", "g"), arguments [i]);
+			}
+			return message;
+		}
+		// Translate a Football comm response.
+		assert (arguments.length == 1);
+		assert (typeof (value) == 'object');
+		assert ('code' in value);
+		if (typeof (value) != 'object' || !('code' in value)) {
+			return 'Bad translation request';
+		}
+		return (value.code in ERRORS ? ERRORS [value.code] : value.text);
+	});
+}
+
+

@@ -1,0 +1,510 @@
+/* pianod web client - communication class
+   Copr. 2013-2014 Perette Barella/Devious Fish
+   All rights reserved.
+*/
+@charset "UTF-8";
+
+/* Default/general setup */
+body {
+	font-family: sans-serif;
+	line-height: 1.3;
+}
+table {
+	border-collapse: collapse;
+}
+.note {
+	font-size: 80%;
+}
+.add {
+	color: green;
+}
+.remove {
+	color: red;
+}
+h1 {
+	font-size:110%;
+	margin:0 0 0.5ex 0;
+}
+h2, h3 {
+	font-size:100%;
+	margin: 0 0 0.5ex 0;
+}
+#footer {
+	display:none;
+}
+.error {
+	color:red;
+}
+label + select,
+label + input {
+	display:block;
+	margin-bottom:1ex;
+	width:90%;
+}
+.pager {
+	width:100%;
+	padding:0.5ex;
+}
+.pagenumber {
+	display:block;
+	float:right;
+}
+ul.actions {
+	list-style-type: none;
+	padding-left: 0;
+}
+div.accordion ul.actions {
+	padding-left: 1em;
+}
+ul.actions li {
+	margin: 1ex 0;
+}
+div.actiongrouping {
+	border: thin solid black;
+	margin: 0.5ex;
+	padding: 1ex;
+	border-radius: 0.5ex;
+}
+div.actiongrouping > p:first-child {
+	margin-top: 0;
+	font-weight: bold;
+	margin-bottom: 0.5ex;
+}
+
+/* Pop-up related styles */
+div.popup {
+	display: none;
+	background: black;
+	position: absolute;
+	left: 5%;
+	width: 90%;
+	top: 2.5em;
+	opacity: 0.9;
+	border: thin solid #aaa;
+	border-radius: 1ex;
+	z-index: 6;
+}
+div.popup > div {
+	color: white;
+	padding: 0 1ex;
+}
+div.popup > div > span.close {
+	color: red;
+	display: block;
+	float: right;
+	cursor: pointer
+}
+div.popup div.actiongrouping {
+	border-color: white;
+}
+
+
+/* Navigation: buttons and accordions (h3) */
+a.disabled,
+a[href=''] {
+	text-decoration: none;
+}
+a[onclick],
+a span.value {
+	color: blue;
+}
+a[onclick]:not(.button):hover,
+a:not(.button) span.value:hover,
+label[onclick]:hover {
+	text-decoration: underline;
+}
+a[onclick].button:hover,
+a.button span.value:hover,
+h3:hover {
+	border-color: black;
+}
+a.disabled span.value,
+a[href=''] span.value {
+	color: black;
+	text-decoration: none;
+	pointer-events: none;
+}
+
+h3,
+a.button {
+	padding: 0.2ex 0.5ex;
+	margin: 0 1px;
+	border: thin solid #888;
+	background: #ccc;
+	border-radius: 0.8ex;
+	cursor: pointer;
+	color: black;
+	text-decoration: none;
+}
+h3 {
+	font-weight:normal;
+	width: 90%;
+	padding:0.5ex 4%;
+	margin:1ex 0 0;
+}
+h3 + div {
+	display: none;
+}
+h3.selected + div {
+	display: block;
+}	
+h3:before {
+	content: '\25b6  ';
+}
+h3.selected:before {
+	content: '\25bc  ';
+}
+h3.disabled,
+.button.disabled {
+	opacity: 0.3;
+	pointer-events: none;
+}
+.button.selected {
+	color: green;
+}
+
+/* Ratings widgets */
+.ratingwidget {
+	position: relative;
+}
+.ratingwidget > span {
+	position: absolute;
+	white-space: nowrap;
+}
+.ratingwidget > span > span {
+	visibility: inherit;
+}
+.ratingwidget > .outline {
+	color: #aaa;
+}
+.ratingwidget > span.spacer {
+	position: static;
+	visibility: hidden;
+}
+.ratingwidget > span.rated05 > span.value:after { content: '\00bd'; }
+.ratingwidget > span.rated10 > span.value:after { content: '\2605'; }
+.ratingwidget > span.rated15 > span.value:after { content: '\2605 \00bd'; }
+.ratingwidget > span.rated20 > span.value:after { content: '\2605 \2605'; }
+.ratingwidget > span.rated25 > span.value:after { content: '\2605 \2605 \00bd'; }
+.ratingwidget > span.rated30 > span.value:after { content: '\2605 \2605 \2605'; }
+.ratingwidget > span.rated35 > span.value:after { content: '\2605 \2605 \2605 \00bd'; }
+.ratingwidget > span.rated40 > span.value:after { content: '\2605 \2605 \2605 \2605'; }
+.ratingwidget > span.rated45 > span.value:after { content: '\2605 \2605 \2605  \2605\00bd'; }
+.ratingwidget > span.rated50 > span.value:after { content: '\2605 \2605 \2605 \2605 \2605'; }
+
+#sourcepicker {
+	float: right;
+	margin-right: 1em;
+}
+
+#switcher {
+	background: #bbb;
+	width: 100%;
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 4;
+}
+#switcher.disabled {
+	display: none;
+}
+#switcher a {
+	background: #bbb;
+	color: black;
+}
+#switcher a:hover {
+	background: #ddd;
+	text-decoration: none;
+}
+#switcher a.hidden {
+	display: none;
+}
+#switcher:not(.collapse) a {
+	padding: 0.25ex 0.5ex;
+	float: left;
+	border: 1px solid black;
+	margin-left: -1px;
+}
+#switcher.collapse > div {
+	z-index: 5;
+	border: thin solid black;
+}
+#switcher > div > a {
+	display: block;
+}
+#switcher.collapse > div > a {
+	padding: 1ex;
+}
+
+/* View management */
+#views {
+	clear: both;
+	display: -webkit-flex;
+	display: flex;
+	margin-top:2em;
+}
+#switcher.collapse + #views {
+	margin-top: 1.3em;
+}
+#views > div {
+	padding:5px;
+	position:relative;
+}
+.columnar {
+	columns: 220px auto;
+	-webkit-columns: 220px auto;
+	margin: 0.5ex 0;
+}
+
+/* Status message area below views */
+#status {
+	clear:left;
+}
+
+
+
+/* Track view pagers, track controls */
+#trackviewtitle {
+	width:100%;
+	padding:0.5ex;
+}
+#previoustrack,
+#nexttrack {
+	position:absolute;
+	visibility:visible;
+	bottom:4em;
+	color:white;
+	background:rgba(0, 0, 0, 0.4);
+}
+#previoustrack {
+	left: 5%;
+}
+#nexttrack {
+	right: 5%;
+}
+
+/* Track view */
+#playlistname {
+	width: 27ex;
+}
+#trackview {
+	background-color:#ddf;
+	background: linear-gradient(60deg, #777, #eee);
+}
+.trackcontrols { /* Play/pause, skip */
+	float:right;
+	margin-right:3px;
+}
+#albumcover {
+	position:relative;
+	visibility:visible;
+}
+#albumart {
+	width: 96%;
+	background: black;
+	padding: 4px;
+	height: auto;
+}
+
+#why,
+.statusoverlay,
+#controller {
+	position: absolute;
+	width:214px;
+	left: 0;
+	right: 0;
+	margin-left: auto;
+	margin-right: auto;
+	padding:3px;
+	border-radius:1ex;
+	background: rgba(0,0,0,.4);
+	text-align:center;
+}
+.statusoverlay {
+	width:90%;
+	left:4%;
+	top:10px;
+	color:white;
+}
+.statusoverlay span {
+	font-size: 300%;
+}
+#why {
+	display: none;
+	width: auto;
+	top: 10px;
+	left: auto;
+	right: 10px;
+	color: white;
+	min-width: 1em;
+}
+
+#controller { /* Ratings controller */
+	bottom:21px;
+	text-align: center;
+	white-space: nowrap;
+}
+#controller .button {
+	font-size: 120%;
+	min-width: 5em;
+	border-radius: 1ex;
+}
+
+#timepoint, #duration { /* Time display at bottom of album art */
+	font-size:70%;
+	color:#fff;
+}
+#statusbar { /* The background of the progress bar */
+	margin-top:3px;
+	position:relative;
+	left: 5%;
+	width:90%;
+	height:3px;
+	background:#ccc;
+}
+#progressbar { /* The progress of the status bar */
+	height:3px;
+	background:#A4F;
+}
+
+.button.seed {
+	display:block;
+	float:right;
+}
+#trackdetails > div {
+	clear:right;
+}
+input[type=range] {
+	width: 98%;
+	margin-left:1%;
+}
+
+/* Activity View */
+#activityview {
+	background:#ffe;
+	background: linear-gradient(30deg, #eec, #ffe);
+}
+#yellmessage {
+	width: 95%;
+}
+#recentactivity {
+	list-style-position: inside;
+	padding-left: 0;
+	margin: 0.3ex;
+}
+#views.single #recentactivity {
+	height: auto !important;
+}
+
+
+/* Playlist View */
+#playlistview {
+	background:#ccc;
+	background: linear-gradient(60deg, #777, #eee);
+}
+.pending {
+	color: red;
+}
+#playlistlist {
+	list-style-type: none;
+	padding-left: 0;
+}
+#playlistlist input,
+#playlistlist span.button {
+	display:none;
+}
+#playlistlist.showmix input {
+	display: inline;
+}
+#playlistlist.showratings {
+	line-height: 1.6;
+}
+#playlistlist.showratings span.button {
+	display: inline;
+}
+#playlistlist.showratings.disabled span.button {
+	opacity: 0.7;
+}
+#playlistlist.showratings.disabled label {
+	color: #888;
+}
+
+/* Administration view */
+#adminview {
+	background:#eee;
+	background: linear-gradient(30deg, #ccc, #eee);
+}
+
+/* User view */
+#userview {
+	background: #fee;
+	background: linear-gradient(30deg, #ecc, #fee);
+}
+ul.privilegelist {
+	margin-top:0;
+	padding-left:0;
+	list-style-type: none;
+}
+ul.privilegelist li {
+	margin: 0;
+}
+
+/* Searchview */
+#searchview {
+	background: #eef;
+	background: linear-gradient(30deg, #ccf, #eef);
+}
+#searchview > label {
+	clear: both;
+	float: left;
+	display: inline-block;
+	width: 6em;
+}
+#searchview > select,
+#searchview > input {
+	max-width: 20em;
+	width: auto;
+}
+#searchview:not(.columns-1) > input {
+	max-width: 60em;
+}
+
+/* SeedView */
+#seedview {
+	background:#eff;
+	background: linear-gradient(30deg, #cee, #eff);
+}
+
+/* If single pane, let whole window scroll */
+#views:.single .scrolling {
+	display:block;
+	height: auto !important;
+}
+
+/* Scrolling element, likely list or table */
+#views:not(.single) .scrolling {
+	overflow-y: scroll;
+	display: block;
+}
+
+/* Adjust table rendering for narrow layouts */
+.columns-1 table.scrolling {
+	width: 100% !important;
+}
+.columns-1 table.scrolling tr {
+	display: block;
+	width: 100%;
+}
+.columns-1 table.scrolling tr:nth-child(even) {
+	background: white;
+}
+.columns-1 table.scrolling td
+{
+	display: block;
+}
+.columns-1 table.scrolling td:empty,
+.columns-1 table.scrolling > thead
+{
+	display: none;
+}
+
