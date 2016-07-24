@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ConfigParameters xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <ComPort>/dev/ttyUSB0</ComPort>
+  <RemoveDupes>true</RemoveDupes>
+  <PollMS>1000</PollMS>
+  <Units>1</Units>
+  <WebPort>50230</WebPort>
+  <WebAddress>192.168.2.128</WebAddress>
+  <IPAddress>*</IPAddress>
+  <Sources>
+    <string>Pandora</string>
+    <string>None 1</string>
+    <string>None 2</string>
+    <string>None 3</string>
+    <string>None 4</string>
+    <string>None 5</string>
+  </Sources>
+  <PolledWait>true</PolledWait>
+  <UseWebApi>false</UseWebApi>
+</ConfigParameters>
